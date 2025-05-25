@@ -1,8 +1,11 @@
+mod gm_code;
+
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use libgm::{GMData, read_data_file, parse_data_file};
 use biologischer_log::{init_logger, CustomLogger};
-use libgm::gm::GMRoom;
+use libgm::gm::{GMRoom, GMValue};
 use log::info;
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
@@ -11,17 +14,20 @@ use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowAttributes, WindowId};
 use pixels::{Pixels, SurfaceTexture};
 use winit::dpi::PhysicalSize;
+use crate::gm_code::GMStack;
 
 struct App {
     logger: Arc<CustomLogger>,
-    
+
     window: Option<Window>,
     pixels: Option<Pixels<'static>>,
-    
+
     window_title: String,
     window_width: u32,
     window_height: u32,
     current_room: GMRoom,
+    stack: GMStack,
+    variables: HashMap<usize, GMValue>,
 }
 
 
@@ -31,7 +37,7 @@ impl ApplicationHandler for App {
         let window_attributes = WindowAttributes::default()
             .with_title(&self.window_title)
             .with_inner_size(PhysicalSize::new(self.window_width, self.window_height));
-        
+
         let window: Window = event_loop.create_window(window_attributes).expect("Could not create window");
         let size: PhysicalSize<u32> = window.inner_size();
 
@@ -101,10 +107,10 @@ fn main() -> Result<(), String> {
     let first_room_id: usize = data.general_info.room_order[0] as usize;
     let first_room: GMRoom = data.rooms.rooms_by_index[first_room_id].clone();
     let window_title: String = data.general_info.display_name.resolve(&data.strings.strings_by_index)?.to_owned();
-    
+
     let event_loop: EventLoop<()> = EventLoop::new().expect("Could not create event loop");
     event_loop.set_control_flow(ControlFlow::Poll);
-    
+
     let mut app = App {
         logger,
         window: None,
