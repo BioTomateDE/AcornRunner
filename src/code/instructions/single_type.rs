@@ -1,7 +1,7 @@
 use libgm::gm::GMValue;
-use crate::code::run::GMStack;
+use crate::code::run::Stack;
 
-pub fn neg(stack: &mut GMStack) -> Result<(), String> {
+pub fn neg(stack: &mut Stack) -> Result<(), String> {
     let old: GMValue = stack.pop()?;
     let new: GMValue = match old {
         GMValue::Double(val) => GMValue::Double(-val),
@@ -16,7 +16,7 @@ pub fn neg(stack: &mut GMStack) -> Result<(), String> {
     stack.push(new);
     Ok(())
 }
-pub fn not(stack: &mut GMStack) -> Result<(), String> {
+pub fn not(stack: &mut Stack) -> Result<(), String> {
     let old: GMValue = stack.pop()?;
     let new: GMValue = match old {
         GMValue::Boolean(val) => GMValue::Boolean(!val),
@@ -25,16 +25,16 @@ pub fn not(stack: &mut GMStack) -> Result<(), String> {
     stack.push(new);
     Ok(())
 }
-pub fn dup(stack: &mut GMStack) -> Result<(), String> {
+pub fn dup(stack: &mut Stack) -> Result<(), String> {
     let value: GMValue = stack.peek()?;
     stack.push(value);
     Ok(())
 }
-pub fn ret(stack: &mut GMStack) -> Result<GMValue, String> {
+pub fn ret(stack: &mut Stack) -> Result<GMValue, String> {
     let value: GMValue = stack.pop()?;
     Ok(value)
 }
-pub fn popz(stack: &mut GMStack) -> Result<(), String> {
+pub fn popz(stack: &mut Stack) -> Result<(), String> {
     stack.pop()?;
     Ok(())
 }

@@ -14,7 +14,8 @@ use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowAttributes, WindowId};
 use pixels::{Pixels, SurfaceTexture};
 use winit::dpi::PhysicalSize;
-use code::run::GMStack;
+use code::run::Stack;
+use crate::code::run::Variables;
 
 struct App {
     logger: Arc<CustomLogger>,
@@ -22,12 +23,13 @@ struct App {
     window: Option<Window>,
     pixels: Option<Pixels<'static>>,
 
+    data: GMData,
     window_title: String,
     window_width: u32,
     window_height: u32,
     current_room: GMRoom,
-    stack: GMStack,
-    variables: HashMap<usize, GMValue>,
+    stack: Stack,
+    variables: Variables,
 }
 
 
@@ -119,8 +121,13 @@ fn main() -> Result<(), String> {
         window_width: data.general_info.default_window_width,
         window_height: data.general_info.default_window_height,
         current_room: first_room,
-        stack: GMStack::new(),
-        variables: HashMap::new(),
+        data,
+        stack: Stack::new(),
+        variables: Variables {
+            globals: HashMap::new(),
+            instances: HashMap::new(),
+            locals: HashMap::new(),
+        },
     };
     event_loop.run_app(&mut app)
         .map_err(|e| format!("An error has occurred in the event loop: {e}"))

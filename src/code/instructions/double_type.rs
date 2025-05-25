@@ -1,9 +1,9 @@
 use std::any::type_name_of_val;
 use libgm::gm::{GMDataType, GMValue};
-use crate::code::run::GMStack;
+use crate::code::run::Stack;
 use std::convert::TryInto;
 
-pub fn conv(stack: &mut GMStack, target_data_type: GMDataType) -> Result<(), String> {
+pub fn conv(stack: &mut Stack, target_data_type: GMDataType) -> Result<(), String> {
     let old: GMValue = stack.pop()?;
     let new: GMValue = match target_data_type {
         GMDataType::Double => GMValue::Double(match old {
@@ -66,7 +66,7 @@ pub fn conv(stack: &mut GMStack, target_data_type: GMDataType) -> Result<(), Str
     Ok(())
 }
 
-pub fn mul(stack: &mut GMStack) -> Result<(), String> {
+pub fn mul(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -82,7 +82,7 @@ pub fn mul(stack: &mut GMStack) -> Result<(), String> {
 }
 
 
-pub fn div(stack: &mut GMStack) -> Result<(), String> {
+pub fn div(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -98,7 +98,7 @@ pub fn div(stack: &mut GMStack) -> Result<(), String> {
 }
 
 
-pub fn rem(stack: &mut GMStack) -> Result<(), String> {
+pub fn rem(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -113,7 +113,7 @@ pub fn rem(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn mod_(stack: &mut GMStack) -> Result<(), String> {
+pub fn mod_(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -128,7 +128,7 @@ pub fn mod_(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn add(stack: &mut GMStack) -> Result<(), String> {
+pub fn add(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -143,7 +143,7 @@ pub fn add(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn sub(stack: &mut GMStack) -> Result<(), String> {
+pub fn sub(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -158,7 +158,7 @@ pub fn sub(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn and(stack: &mut GMStack) -> Result<(), String> {
+pub fn and(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -172,7 +172,7 @@ pub fn and(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn or(stack: &mut GMStack) -> Result<(), String> {
+pub fn or(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -186,7 +186,7 @@ pub fn or(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn xor(stack: &mut GMStack) -> Result<(), String> {
+pub fn xor(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -200,7 +200,7 @@ pub fn xor(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn shl(stack: &mut GMStack) -> Result<(), String> {
+pub fn shl(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
@@ -220,7 +220,7 @@ pub fn shl(stack: &mut GMStack) -> Result<(), String> {
     Ok(())
 }
 
-pub fn shr(stack: &mut GMStack) -> Result<(), String> {
+pub fn shr(stack: &mut Stack) -> Result<(), String> {
     let lhs: GMValue = stack.pop()?;
     let rhs: GMValue = stack.pop()?;
     let result: GMValue = match (lhs, rhs) {
