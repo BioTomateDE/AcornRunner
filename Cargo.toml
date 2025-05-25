@@ -1,0 +1,9 @@
+[package]
+name = "AcornRunner"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+libgm = { git = "https://github.com/BioTomateDE/LibGM.git" }
+biologischer-log = { git = "https://github.com/BioTomateDE/rust-biologischer-log.git" }
+log = "0.4.27"
