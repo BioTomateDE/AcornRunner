@@ -7,3 +7,5 @@ edition = "2024"
 libgm = { git = "https://github.com/BioTomateDE/LibGM.git" }
 biologischer-log = { git = "https://github.com/BioTomateDE/rust-biologischer-log.git" }
 log = "0.4.27"
+winit = "0.30.11"
+pixels = "0.15.0"
