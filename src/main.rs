@@ -1,20 +1,20 @@
-mod gm_code;
+mod code;
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use libgm::{GMData, read_data_file, parse_data_file};
+use libgm::{parse_data_file, read_data_file, GMData};
 use biologischer_log::{init_logger, CustomLogger};
 use libgm::gm::{GMRoom, GMValue};
 use log::info;
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
-use winit::event_loop::{ActiveEventLoop, EventLoop, ControlFlow};
+use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 use winit::keyboard::{KeyCode, PhysicalKey};
 use winit::window::{Window, WindowAttributes, WindowId};
 use pixels::{Pixels, SurfaceTexture};
 use winit::dpi::PhysicalSize;
-use crate::gm_code::GMStack;
+use code::run::GMStack;
 
 struct App {
     logger: Arc<CustomLogger>,
@@ -119,6 +119,8 @@ fn main() -> Result<(), String> {
         window_width: data.general_info.default_window_width,
         window_height: data.general_info.default_window_height,
         current_room: first_room,
+        stack: GMStack::new(),
+        variables: HashMap::new(),
     };
     event_loop.run_app(&mut app)
         .map_err(|e| format!("An error has occurred in the event loop: {e}"))

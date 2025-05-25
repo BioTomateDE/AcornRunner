@@ -9,6 +9,7 @@ dependencies = [
  "biologischer-log",
  "libgm",
  "log",
+ "num-traits",
  "pixels",
  "winit",
 ]
