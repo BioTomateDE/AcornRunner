@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use libgm::gm::{GMCode, GMFunction, GMInstruction, GMOpcode, GMValue};
+use libgm::gm::{GMCode, GMFunction, GMInstanceType, GMInstruction, GMOpcode, GMValue};
 use crate::App;
 use crate::code::instructions::double_type::{add, and, conv, div, mod_, mul, or, rem, shl, shr, sub, xor};
 use crate::code::instructions::other::{bf, bt, cmp, pop};
@@ -37,13 +37,14 @@ pub struct Variables {
 
 
 impl App {
-    pub fn run_code(&mut self, code_index: usize) -> Result<Option<GMValue>, String> {
+    pub fn run_code(&mut self, code_index: usize, object_index: usize) -> Result<Option<GMValue>, String> {
         let code: &GMCode = &self.data.codes.codes_by_index[code_index];
         let mut i: usize = 0;
-        
+
         while i < code.instructions.len() {
             match &code.instructions[i] {
                 GMInstruction::SingleType(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?} - {:?}", instr.opcode, instr.data_type);
                     match instr.opcode {
                         GMOpcode::Neg => neg(&mut self.stack)?,
                         GMOpcode::Not => not(&mut self.stack)?,
@@ -56,6 +57,7 @@ impl App {
                 }
 
                 GMInstruction::DoubleType(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?} - {:?} {:?}", instr.opcode, instr.type1, instr.type2);
                     match instr.opcode {
                         GMOpcode::Conv => conv(&mut self.stack, instr.type2)?,
                         GMOpcode::Mul => mul(&mut self.stack)?,
@@ -74,10 +76,12 @@ impl App {
                 }
 
                 GMInstruction::Comparison(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?} - {:?} {:?} {:?}", instr.opcode, instr.type1, instr.comparison_type, instr.type2);
                     cmp(&mut self.stack, instr.comparison_type)?;
                 }
 
                 GMInstruction::Goto(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?} - {}", instr.opcode, instr.jump_offset);
                     match instr.opcode {
                         GMOpcode::B => i = (i as i32 + instr.jump_offset * 4) as usize,
                         GMOpcode::Bt => if bt(&mut self.stack)? { i = (i as i32 + instr.jump_offset * 4) as usize },
@@ -89,14 +93,21 @@ impl App {
                 }
 
                 GMInstruction::Pop(instr) => {
-                    pop(&mut self.variables, code_index, &mut self.stack, &instr.instance_type, &instr.destination)?;
+                    log::debug!("Executing Instruction #{i}: {:?} - {:?} {:?} {:?}", instr.opcode, instr.destination.variable_type, instr.destination.variable, instr.type2);
+                    // let instance_type: &GMInstanceType = match &instr.instance_type {
+                    //     GMInstanceType::Instance(None) => &instr.destination.variable.resolve(&self.data.variables.variables)?.instance_type,
+                    //     other => other,
+                    // };
+                    pop(&mut self.variables, code_index, object_index, &mut self.stack, &instr.instance_type, &instr.destination)?;
                 }
 
                 GMInstruction::Push(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?} - {:?}", instr.opcode, instr.value);
                     self.stack.push(instr.value.clone());
                 }
 
                 GMInstruction::Call(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?} - {:?} {:?}({})", instr.opcode, instr.data_type, instr.function, instr.arguments_count);
                     todo!()
                     // let function: &GMFunction = instr.function.resolve(&self.data.functions.functions_by_index)?;
                     // function.
@@ -104,10 +115,13 @@ impl App {
                 }
 
                 GMInstruction::Break(instr) => {
+                    log::debug!("Executing Instruction #{i}: {:?}", instr.opcode);
                     todo!()
                 }
             }
 
+            log::trace!("Stack: {:?}", self.stack);
+            log::trace!("Variables: {:?}", self.variables);
             i += 1;     // increment instruction counter
         }
         Ok(None)

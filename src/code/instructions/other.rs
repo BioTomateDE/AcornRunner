@@ -51,12 +51,22 @@ pub fn bf(stack: &mut Stack) -> Result<bool, String> {
 }
 
 
-pub fn pop(variables: &mut Variables, code_index: usize, stack: &mut Stack, instance_type: &GMInstanceType, destination: &GMCodeVariable) -> Result<(), String> {
+pub fn pop(
+    variables: &mut Variables,
+    code_index: usize,
+    object_index: usize,
+    stack: &mut Stack,
+    instance_type: &GMInstanceType,
+    destination: &GMCodeVariable,
+) -> Result<(), String> {
     let value: GMValue = stack.pop()?;
-    
+
     match instance_type {
         GMInstanceType::Instance(Some(obj)) => {
             variables.instances.insert((destination.variable.index, obj.index), value);
+        }
+        GMInstanceType::Instance(None) => {
+            variables.instances.insert((destination.variable.index, object_index), value);
         }
         GMInstanceType::Global => {
             variables.globals.insert(destination.variable.index, value);
@@ -66,7 +76,7 @@ pub fn pop(variables: &mut Variables, code_index: usize, stack: &mut Stack, inst
         }
         other => return Err(format!("Invalid Instance Type {other:?} while popping value {value:?}"))
     }
-    
+
     Ok(())
 }
 
